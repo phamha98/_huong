@@ -25,19 +25,27 @@ function App() {
   const [value2, setValue2] = useState(58151);
   const [value3, setValue3] = useState(2351.35);
   const [value4, setValue4] = useState(50);
-
-
+  const pageLeft = [
+    'Số ca nhiễm',
+    'Tổng số ca',
+    'Tỷ lệ ca nặng',
+    'Tổng nhân lực y tế',
+    'TP trung ương / tỉnh',
+  ]
+  const pageRight = [
+    'Tỷ lệ ca nhiễm/Số cư dân',
+    'Tỷ lệ ca nặng/Tổng ca',
+    'Tỷ lệ ca tử vong/Tổng ca',
+  ]
   return (
     <div className="App" style={{ padding: 10, borderWidth: 20, borderStyle: 'solid', borderRadius: 10 }} >
       <BlockUI style={{ borderColor: 'red' }}>
-        <Button label="PHÂN BỔ NGUỒN LỰC Y TẾ" style={{ width: '100%', borderRadius: 0 }} />
-        <Card style={{ marginTop: -50, marginBottom: -50 }} >
-          <p className="m-0">
-            Thống kê tình hình dịch bệnh của 63 tình thành trên cả nước hôm nay (10/05/2023)
-          </p>
-        </Card>
+        <Button disabled label="PHÂN BỔ NGUỒN LỰC Y TẾ" style={{ width: '100%', borderRadius: 0, backgroundColor: 'blue' }} />
+        <h3 style={{ marginTop: 20, marginBottom: 20 }} >
+          Thống kê tình hình dịch bệnh của 63 tình thành trên cả nước hôm nay (10/05/2023)
+        </h3>
         <DataTable value={products} tableStyle={{ minWidth: '50rem' }}>
-          <Column field="a" align={'center'} header="STT"  ></Column>
+          <Column field="a" align={'center'} header="STT"    ></Column>
           <Column field="b" align={'center'} header="Tỉnh/TP" ></Column>
           <Column field="c" align={'center'} header="Số ca nhiễm" ></Column>
           <Column field="d" align={'center'} header="Tồng số ca" ></Column>
@@ -57,47 +65,47 @@ function App() {
           {/* ////////////// */}
           <td style={{ flex: 1, backgroundColor: '#fff', alignItems: 'center' }}>
             <tr style={styleApp.rowItem}>
-              <td>Số ca nhiễm</td>
-              <td><InputNumber inputId="minmaxfraction" minFractionDigits={2} maxFractionDigits={5} style={styleApp.input} /></td>
+              <td style={{ flex: 1 }}>{pageLeft[0]}</td>
+              <td style={{ flex: 2 }}><InputNumber inputId="minmaxfraction" minFractionDigits={2} maxFractionDigits={5} style={styleApp.input} /></td>
             </tr>
             <tr style={styleApp.rowItem}>
-              <td>Số ca nhiễm</td>
-              <td><InputNumber inputId="minmaxfraction" minFractionDigits={2} maxFractionDigits={5} style={styleApp.input} /></td>
+              <td style={{ flex: 1 }}>{pageLeft[1]}</td>
+              <td style={{ flex: 2 }}><InputNumber inputId="minmaxfraction" minFractionDigits={2} maxFractionDigits={5} style={styleApp.input} /></td>
             </tr>
             <tr style={styleApp.rowItem}>
-              <td>Số ca nhiễm</td>
-              <td><InputNumber inputId="minmaxfraction" minFractionDigits={2} maxFractionDigits={5} style={styleApp.input} /></td>
+              <td style={{ flex: 1 }}>{pageLeft[2]}</td>
+              <td style={{ flex: 2 }}><InputNumber inputId="minmaxfraction" minFractionDigits={2} maxFractionDigits={5} style={styleApp.input} /></td>
             </tr>
             <tr style={styleApp.rowItem}>
-              <td>Số ca nhiễm</td>
-              <td><InputNumber inputId="minmaxfraction" minFractionDigits={2} maxFractionDigits={5} style={styleApp.input} /></td>
+              <td style={{ flex: 1 }}>{pageLeft[3]}</td>
+              <td style={{ flex: 2 }}><InputNumber inputId="minmaxfraction" minFractionDigits={2} maxFractionDigits={5} style={styleApp.input} /></td>
             </tr>
           </td>
           {/* ////////////// */}
           <td style={{ flex: 1, backgroundColor: '#fff' }}>
             <tr style={styleApp.rowItem}>
-              <td>Số ca nhiễm</td>
-              <td><InputNumber inputId="minmaxfraction" minFractionDigits={2} maxFractionDigits={5} style={styleApp.input} /></td>
+              <td style={{ flex: 1 }}>{pageRight[0]}</td>
+              <td style={{ flex: 2 }}><InputNumber inputId="minmaxfraction" minFractionDigits={2} maxFractionDigits={5} style={styleApp.input} /></td>
             </tr>
             <tr style={styleApp.rowItem}>
-              <td>Số ca nhiễm</td>
-              <td><InputNumber inputId="minmaxfraction" minFractionDigits={2} maxFractionDigits={5} style={styleApp.input} /></td>
+              <td style={{ flex: 1 }}>{pageRight[1]}</td>
+              <td style={{ flex: 2 }}><InputNumber inputId="minmaxfraction" minFractionDigits={2} maxFractionDigits={5} style={styleApp.input} /></td>
             </tr>
             <tr style={styleApp.rowItem}>
-              <td>Số ca nhiễm</td>
-              <td><InputNumber inputId="minmaxfraction" minFractionDigits={2} maxFractionDigits={5} style={styleApp.input} /></td>
+              <td style={{ flex: 1 }}>{pageRight[2]}</td>
+              <td style={{ flex: 2 }}><InputNumber inputId="minmaxfraction" minFractionDigits={2} maxFractionDigits={5} style={styleApp.input} /></td>
             </tr>
-            <tr style={styleApp.rowItem}>
-              <td>Số ca nhiễm</td>
+            {/* <tr style={styleApp.rowItem}>
+              <td>{''}</td>
               <td><InputNumber inputId="minmaxfraction" minFractionDigits={2} maxFractionDigits={5} style={styleApp.input} /></td>
-            </tr>
+            </tr> */}
           </td>
         </table>
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 30, marginBottom: 50 }}>
-          <Button label="Làm mới" style={{ width: '30%' }} />
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 30, marginBottom: 50, marginRight: 10 }}>
+          <Button label="Làm mới" style={{ width: 150 }} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', margin: 10 }}>
-          <h3>Kết quả:<span style={{ color: 'red', marginLeft: 20 }}>Độ tin cậy các trọng số</span></h3>
+          <h3>Kết quả:<span style={{ color: 'green', marginLeft: 20 }}>Độ tin cậy các trọng số =0 (Hợp lệ)</span></h3>
           <h3 style={{ marginTop: 0 }}>Bảng xếp hạng các thành phố có nguy cơ dịch bệnh</h3>
         </div>
         <DataTable value={products} tableStyle={{ minWidth: '50rem' }}>
@@ -114,11 +122,11 @@ function App() {
         </DataTable>
         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', margin: 10 }}>
           <h3>Nhập ngưỡng quyết định phân bổ</h3>
-          <InputNumber inputId="minmaxfraction" minFractionDigits={2} maxFractionDigits={5} style={styleApp.input} />
+          <InputNumber inputId="minmaxfraction" minFractionDigits={2} maxFractionDigits={5} style={{ marginLeft: 30 }} />
           <Button label="Kết quả" style={{ width: 180, marginLeft: 50 }} />
         </div>
-      </BlockUI>
-    </div>
+      </BlockUI >
+    </div >
   );
 }
 
@@ -126,7 +134,7 @@ export default App;
 const styleApp: Record<string, CSSProperties> = {
   input: {
     margin: 5,
-    width: 300
+    width: '90%'
   },
   rowItem: { display: 'flex', justifyContent: 'center', alignItems: 'center' }
 }
