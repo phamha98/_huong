@@ -2,7 +2,7 @@
 import React from 'react'
 import { DataTable, } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-const TableValidate5 = ({ data = [] }: any) => {
+export default function TableValidate5({ data = [] }: any) {
     return (
         <DataTable value={data} tableStyle={{ minWidth: '50rem' }}>
             <Column field="x0" header="x0" />
@@ -17,4 +17,3 @@ const TableValidate5 = ({ data = [] }: any) => {
     )
 }
 
-export default TableValidate5
