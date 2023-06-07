@@ -476,7 +476,7 @@ function App() {
                     </>
                 }
                 <Button onClick={Run2} label='Run2' />
-                <TableValidate4 data={data4.map(i => ({ ...i, x7: i?.x7 == 1 ? "Tỉnh" : i?.x7 == 2 ? "TW" : "TP" }))} />
+                <TableValidate4 data={data4.map(i => ({ ...i, x7: i?.x7 == 4 ? "Chung ương" : "Tỉnh" }))} />
                 <Title title={`TableValidate5`} />
                 <TableValidate5 data={data5} />
                 <TableTrongSo data={dataTrongSo} />
