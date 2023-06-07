@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './App.css'
 import { BlockUI } from 'primereact/blockui'
 import { Button } from 'primereact/button'
@@ -9,6 +9,8 @@ import TableValidate2 from './components/TableValidate2'
 import TableValidate3 from './components/TableValidate3'
 import TableValidate4 from './components/TableValidate4'
 import TableValidate5 from './components/TableValidate5'
+import { theCity } from './theCity'
+import { isArray } from 'underscore'
 import { TableValidate6, TableTrongSo, TableValidate6MinMax, TableValidate7, TableValidateAdd, TableValidateSub, InputNumberAddSub } from './components'
 function getRI(n: number) {
     if (n < 1 || n > 15) return
@@ -241,6 +243,7 @@ function App() {
 
 
 
+
     let _data4 = [
         { x0: 'Hà Nội', x1: 420, x2: 1605587, x3: 0.000050, x4: 0.3114, x5: 0.0008, x6: 17858, x7: 3 },
         { x0: 'TP.HCM', x1: 270, x2: 610064, x3: 0.000029, x4: 0.3278, x5: 0.0333, x6: 30078, x7: 2 },
@@ -250,7 +253,7 @@ function App() {
     ]
     const Run2 = () => {
         let result: any = { x0: "Tổng", x1: 0, x2: 0, x3: 0, x4: 0, x5: 0, x6: 0, x7: 0, }
-        _data4.forEach(item => {
+        data4.forEach(item => {
             result.x1 = result.x1 + Math.pow(item.x1, 2)
             result.x2 = result.x2 + Math.pow(item.x2, 2)
             result.x3 = result.x3 + Math.pow(item.x3, 2)
@@ -271,9 +274,9 @@ function App() {
         }
 
 
-        setData4([..._data4, resultSqrt])
+        setData4([...data4, resultSqrt])
         let _data5: any[] = []
-        _data4.forEach(item => _data5.push({
+        data4.forEach(item => _data5.push({
             x0: item.x0,
             x1: numberRound(item.x1 / resultSqrt.x1),
             x2: numberRound(item.x2 / resultSqrt.x2),
@@ -350,7 +353,14 @@ function App() {
 
         ////
     }
-    const [data4, setData4] = useState(_data4)
+    const [data4, setData4] = useState(theCity.map(i => ({
+        ...i,
+        x1: 0,
+        x2: 0,
+        x3: 0,
+        x4: 0,
+        x5: 0,
+    })))
     const [data5, setData5] = useState<any[]>([])
     const [data6, setData6] = useState<any[]>([])
     const [data7, setData7] = useState<any[]>([])
@@ -368,6 +378,77 @@ function App() {
         setDataSub(data7.filter(({ x10 }) => nguong < x10).map(i => ({ ...i, x12: numberRound(i.x10 / SI) })))
     }
     const phanBoSo = useRef<any>(null)
+    /**
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     */
+    useEffect(() => {
+        const getData = async () => {
+
+            let dataCovid = []
+            fetch("https://covid19.vnanet.vn", {
+                // method: 'GET',
+                // redirect: 'follow',
+                // headers: {
+                //     'Access-Control-Allow-Origin': '*',
+                //     "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
+                //     "Access-Control-Allow-Credentials": "true"
+                // }
+                mode: 'cors'
+            })
+                .then(response => response.text())
+                .then(html => {
+                    // console.log('html', html);
+                    console.log('html.length', html.length);
+                    const pattern = /var dataVietnam = (\[.*?\]);/gs;
+                    const matches = pattern.exec(html);
+                    if (matches && matches.length > 1) {
+                        const dataVietnamJson = matches[1];
+                        // Parse the dataVietnam variable as JSON
+                        dataCovid = JSON.parse(dataVietnamJson);
+                        if (isArray(dataCovid)) {
+                            let obCovid: any = {}
+                            dataCovid.forEach(i => {
+                                obCovid[i?.city] = i
+                            })
+                            console.log('dataCovid', dataCovid);
+                            console.log('obCovid', obCovid);
+                            /**
+                             * 
+                             * city
+                             * dangDieuTri
+                             * homNay
+                             * khoi
+                             * soCaNhiem
+                             * tiem
+                             * tuVong
+                             */
+                            let _new_data4 = data4.map(item => {
+                                let city = obCovid[item?.x0] ?? {}
+                                return {
+                                    ...item,
+                                    x1: city?.homNay,
+                                    x2: city?.soCaNhiem,
+                                    x3: numberRound(city?.soCaNhiem / item?.x9),
+                                    x4: numberRound(city?.dangDieuTri / city?.soCaNhiem),
+                                    x5: numberRound(city?.tuVong / city?.soCaNhiem),
+                                }
+                            })
+                            setData4(_new_data4)
+                        }
+                    } else {
+                        console.log('dataVietnam not found.');
+                    }
+                })
+                .catch(error => console.log('error=>>>>>>', error));
+        }
+        getData()
+    }, [])
     return (
         <div
             className='App'
@@ -395,7 +476,7 @@ function App() {
                     </>
                 }
                 <Button onClick={Run2} label='Run2' />
-                <TableValidate4 data={data4} />
+                <TableValidate4 data={data4.map(i => ({ ...i, x7: i?.x7 == 1 ? "Tỉnh" : i?.x7 == 2 ? "TW" : "TP" }))} />
                 <Title title={`TableValidate5`} />
                 <TableValidate5 data={data5} />
                 <TableTrongSo data={dataTrongSo} />
@@ -414,3 +495,4 @@ function App() {
 }
 
 export default App
+

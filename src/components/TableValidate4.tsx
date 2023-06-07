@@ -5,14 +5,14 @@ import { Column } from 'primereact/column';
 const TableValidate4 = ({ data = [] }: any) => {
     return (
         <DataTable value={data} tableStyle={{ minWidth: '50rem' }}>
-            <Column field="x0" header="x0" />
-            <Column field="x1" header="x1" />
-            <Column field="x2" header="x2" />
-            <Column field="x3" header="x3" />
-            <Column field="x4" header="x4" />
-            <Column field="x5" header="x5" />
-            <Column field="x6" header="x6" />
-            <Column field="x7" header="x7" />
+            <Column field="x0" header="Tỉnh" />
+            <Column field="x1" header="Số ca nhiễm mới" />
+            <Column field="x2" header="Tổng số ca" />
+            <Column field="x3" header="Tỷ lệ ca mắc" />
+            <Column field="x4" header="Tỷ lệ ca mắc" />
+            <Column field="x5" header="Tỷ lệ tử vong" />
+            <Column field="x6" header="Tổng nhân lực y tế" />
+            <Column field="x7" header="TP trung ương/tỉnh" />
         </DataTable>
     )
 }
