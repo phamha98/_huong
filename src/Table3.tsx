@@ -13,6 +13,9 @@ import { theCity } from './theCity'
 import { isArray } from 'underscore'
 import { TableValidate6, TableTrongSo, TableValidate6MinMax, TableValidate7, TableValidateAdd, TableValidateSub, InputNumberAddSub } from './components'
 import moment from 'moment'
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
+
 function getRI(n: number) {
     if (n < 1 || n > 15) return
     const Table = [0.00, 0.00, 0.58, 0.90, 1.12, 1.24, 1.32, 1.41, 1.45, 1.49, 1.51, 1.48, 1.56, 1.57, 1.58]
@@ -514,6 +517,30 @@ export default function App() {
         let data = inputRefPage2.current?.getValue()
         _funcKiemTraTrongSo(data)
     }
+    const _funcExport = async (arr: any[], fileName: string) => {
+        let csvData = arr.map(i => ({
+            "Tỉnh": i.x0,
+            "Số ca nhiễm mới": i.x1,
+            "Tổng số ca": i.x2,
+            "Tỷ lệ ca nhiem": i.x3,
+            "Tỷ lệ ca mắc": i.x4,
+            "Tỷ lệ tử vong": i.x5,
+            "Tổng nhân lực y tế": i.x6,
+            "TP trung ương/tỉnh": i.x7,
+            "Di+": i.x8,
+            "Di-": i.x9,
+            "Si/Di": i.x10,
+            "RANK": i.x11,
+            "Chẩn hoá SI": i.x12,
+        }))
+        const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+        const fileExtension = '.xlsx';
+        const ws = XLSX.utils.json_to_sheet(csvData);
+        const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const data = new Blob([excelBuffer], { type: fileType });
+        FileSaver.saveAs(data, fileName + fileExtension);
+    }
     return (
         <div
             className='App'
@@ -644,6 +671,7 @@ export default function App() {
                         <h3>Kết quả:<span style={{ color: 'green', marginLeft: 10, marginRight: 10 }}>{`${dataAdd.length} tỉnh `}</span>{`có thể cung cấp nguồn lực bác sĩ:`}</h3>
                     </div>
                     <TableValidateAdd data={dataAdd} />
+                    <Button onClick={() => _funcExport(dataAdd, JSON.stringify(`${dataAdd.length} tỉnh có thể cung cấp nguồn lực bác sĩ:`))} label="Xuất ra excel" style={{ width: 180, marginLeft: 50 }} />
                     <div style={{ height: 150 }} />
                     <div style={{
                         display: 'flex',
@@ -653,9 +681,10 @@ export default function App() {
                         paddingTop: 30,
                         borderTop: '1px solid #000'
                     }}>
-                        <h3>Kết quả:<span style={{ color: 'red', marginLeft: 10, marginRight: 10 }}>{`${dataSub.length} tỉnh `}</span>{` tỉnh cần nguồn lực bác sĩ:`}</h3>
+                        <h3>Kết quả:<span style={{ color: 'red', marginLeft: 10, marginRight: 10 }}>{`${dataSub.length} tỉnh `}</span>{` cần nguồn lực bác sĩ:`}</h3>
                     </div>
                     <TableValidateSub data={dataSub} />
+                    <Button onClick={() => _funcExport(dataSub, JSON.stringify(`${dataSub.length} tỉnh cần nguồn lực bác sĩ:`))} label="Xuất ra excel" style={{ width: 180, marginLeft: 50 }} />
                 </BlockUI>
             }
         </div >
