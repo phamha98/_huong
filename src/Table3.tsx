@@ -101,8 +101,10 @@ const numberRound = (v: number) => parseFloat(v.toFixed(6))
 
 export default function App() {
     const _arr1 = useRef<any>([])
-    const phanBoSo = useRef<any>(null)
+    const numberPhanBo = useRef<any>(null)
+    const numberPhanBoPage3 = useRef<any>(null)
     const inputRef = useRef<any>()
+    const inputRefPage2 = useRef<any>()
     const [data1, setData1] = useState<any>([])
     const [data2, setData2] = useState<any>([])
     const [data3, setData3] = useState<any>([])
@@ -117,7 +119,8 @@ export default function App() {
     const [SI, setSI] = useState<any>(0)
 
     const [data6_minMax, setData6_minMax] = useState<any[]>([])
-    const [dataTrongSo, setDataTrongSo] = useState<any[]>([0.2, 0.05, 0.15, 0.15, 0.05, 0.25, 0.15])
+    const [dataTrongSo, setDataTrongSo] = useState<any[]>([])
+    const dataTrongSoRef = useRef<any[]>([])
 
     const _funcClear = () => {
         setData1([])
@@ -131,14 +134,15 @@ export default function App() {
         setDataAdd([])
         setDataSub([])
         setData6_minMax([])
-        setDataTrongSo([])
+        // setDataTrongSo([])
         // setData4(theCity.map(i => ({ ...i, x1: 0, x2: 0, x3: 0, x4: 0, x5: 0, })))
     }
     const [dev, setDev] = useState(false)
     const [navigation, setNavigation] = useState(0)
-    const _funcKiemTraTrongSo = () => {
+    const _funcKiemTraTrongSo = async (e?: any) => {
 
-        let data = inputRef.current?.getValue()
+        let data = inputRef.current?.getValue() ?? e
+
         console.log('data', data)
         const {
             so_ca_nhiem,
@@ -159,6 +163,10 @@ export default function App() {
             tong_nguon_luc +
             ti_le_tinh
         if (sum_tile != 1) return alert('Bạn phải nhập tổng các trọng số =1')
+        setTimeout(() => {
+
+            inputRefPage2.current?.setValue(data)
+        }, 300);
         let x = [
             so_ca_nhiem,
             tong_so_ca,
@@ -168,7 +176,9 @@ export default function App() {
             tong_nguon_luc,
             ti_le_tinh
         ]
-        setDataTrongSo(x)
+        console.log('x', x)
+        await setDataTrongSo(x)
+        dataTrongSoRef.current = x
         // let x = [0.2, 0.05, 0.15, 0.15, 0.05, 0.25, 0.15]
         var n = 7
         var arr = new Array(n)
@@ -251,7 +261,7 @@ export default function App() {
                 arr3[i][9] = numberRound(arr3[i][7] / arr3[i][8])
             }
         }
-        // console.log('arr', arr)
+        // 
         // console.log('arr3', arr3)
         setData3(convertAnToField3(arr3))
 
@@ -268,12 +278,15 @@ export default function App() {
             setResult({
                 CR, lmax, CI, RI,
             })
+
+
             _funcXepHangTP()
+
         }
         else setAlertRI(`Độ tin cậy các trọng số =${CR} (Không hợp lệ)`)
         setNavigation(1)
     }
-
+    console.log('dataTrongSo', dataTrongSo)
     let _data4 = [
         { x0: 'Hà Nội', x1: 420, x2: 1605587, x3: 0.000050, x4: 0.3114, x5: 0.0008, x6: 17858, x7: 3 },
         { x0: 'TP.HCM', x1: 270, x2: 610064, x3: 0.000029, x4: 0.3278, x5: 0.0333, x6: 30078, x7: 2 },
@@ -308,7 +321,7 @@ export default function App() {
         }
         // console.log('resultSqrt', resultSqrt)
 
-        setData4([...data4, resultSqrt])
+        // setData4([...data4, resultSqrt])
         let _data5: any[] = []
         data4.forEach(item => _data5.push({
             x0: item.x0,
@@ -321,17 +334,18 @@ export default function App() {
             x7: numberRound(item.x7 / resultSqrt.x7),
         }))
         console.log('_data5_data5', _data5)
+        console.log('dataTrongSoRef.current', dataTrongSoRef.current)
         setData5(_data5)
         let _data6: any[] = []
         _data5.forEach(item => _data6.push({
             x0: item.x0,
-            x1: numberRound(item.x1 * dataTrongSo[(1 - 1)]),
-            x2: numberRound(item.x2 * dataTrongSo[(2 - 1)]),
-            x3: numberRound(item.x3 * dataTrongSo[(3 - 1)]),
-            x4: numberRound(item.x4 * dataTrongSo[(4 - 1)]),
-            x5: numberRound(item.x5 * dataTrongSo[(5 - 1)]),
-            x6: numberRound(item.x6 * dataTrongSo[(6 - 1)]),
-            x7: numberRound(item.x7 * dataTrongSo[(7 - 1)]),
+            x1: numberRound(item.x1 * dataTrongSoRef.current[(1 - 1)]),
+            x2: numberRound(item.x2 * dataTrongSoRef.current[(2 - 1)]),
+            x3: numberRound(item.x3 * dataTrongSoRef.current[(3 - 1)]),
+            x4: numberRound(item.x4 * dataTrongSoRef.current[(4 - 1)]),
+            x5: numberRound(item.x5 * dataTrongSoRef.current[(5 - 1)]),
+            x6: numberRound(item.x6 * dataTrongSoRef.current[(6 - 1)]),
+            x7: numberRound(item.x7 * dataTrongSoRef.current[(7 - 1)]),
         }))
         setData6(_data6)
 
@@ -392,14 +406,22 @@ export default function App() {
 
         ////
     }
-    //console.log('||||||data7', data7)
-    const _funcChiaPhanBo = () => {
+    console.log('||||||data7', data7)
+    const _funcChiaPhanBo = (e?: any) => {
         setNavigation(2)
-        let nguong = phanBoSo.current?.getValue()
+        let nguong = numberPhanBo.current?.getValue() ?? e
+        setTimeout(() => {
+            numberPhanBoPage3.current?.setValue(nguong)
+        }, 300);
+
         console.log('nguong', nguong)
         console.log('data7', data7)
         setDataAdd(data7.filter(({ x10 }) => nguong > x10).map(i => ({ ...i, x12: numberRound(i.x10 / SI) })))
         setDataSub(data7.filter(({ x10 }) => nguong < x10).map(i => ({ ...i, x12: numberRound(i.x10 / SI) })))
+    }
+    const _funcChiaPhanBoPage2 = () => {
+        let nguong = numberPhanBoPage3.current?.getValue()
+        _funcChiaPhanBo(nguong)
     }
     useEffect(() => {
         const getData = async () => {
@@ -469,19 +491,29 @@ export default function App() {
 
                 break;
             case 1:
+                let data = inputRefPage2.current?.getValue()
+                setTimeout(() => {
+                    inputRef.current?.setValue(data)
+                }, 300);
                 _funcClear()
                 setNavigation(0)
                 break;
             case 2:
                 setNavigation(1)
+                let nguong = numberPhanBoPage3.current?.getValue()
+                setTimeout(() => {
+                    numberPhanBo.current?.setValue(nguong)
+                }, 300);
                 break;
 
             default:
                 break;
         }
     }
-    const _funcLamMoiTrongSo = () => { }
-    const _funcLamMoiNguongPhanBo = () => { }
+    const _funcKiemTraTrongSoPage2 = () => {
+        let data = inputRefPage2.current?.getValue()
+        _funcKiemTraTrongSo(data)
+    }
     return (
         <div
             className='App'
@@ -525,9 +557,9 @@ export default function App() {
                 <BlockUI style={{ borderColor: 'red' }}>
                     <Title title={`Thống kê tình hình dịch bệnh của 63 tình thành trên cả nước hôm nay ${moment().format('DD/MM/YYYY')}`} />
                     <TableValidate4 data={data4.map((i, index) => ({ ...i, x7: i?.x7 == 4 ? "Trung ương" : "Tỉnh", index: index + 1 }))} />
-                    <TableInput ref={inputRef} />
+                    <TableInput ref={inputRefPage2} />
                     <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: -50, marginBottom: 50, marginRight: 40 }}>
-                        <Button onClick={_funcLamMoiTrongSo} label="Làm mới" style={{ width: 150 }} />
+                        <Button onClick={_funcKiemTraTrongSoPage2} label="Làm mới" style={{ width: 150 }} />
                     </div>
                     <div style={{
                         display: 'flex',
@@ -537,7 +569,7 @@ export default function App() {
                         marginBottom: 20,
                         borderTop: '1px solid #000'
                     }}>
-                        <h3>Kết quả:<span style={{ color: 'green', marginLeft: 20 }}>{alertRI}{'Độ tin cậy các trọng số =0 (Hợp lệ)'}</span></h3>
+                        <h3>Kết quả:<span style={{ color: 'green', marginLeft: 20 }}>{alertRI}</span></h3>
                         <Title style={{ marginTop: 0 }} title={`Bảng xếp hạng các thành phố có nguy cơ dịch bệnh`} />
                     </div>
                     {/* <Button onClick={_funcKiemTraTrongSo} label='_funcKiemTraTrongSo' />
@@ -579,7 +611,7 @@ export default function App() {
                         marginBottom: 250
                     }}>
                         <h3 style={{ width: '30%', textAlign: 'left' }}>Nhập ngưỡng quyết định phân bổ</h3>
-                        <InputNumberAddSub ref={phanBoSo} style={{ marginLeft: 30, width: 200 }} />
+                        <InputNumberAddSub ref={numberPhanBo} style={{ marginLeft: 30, width: 200 }} />
                         <Button onClick={_funcChiaPhanBo} label="Kết quả" style={{ width: 180, marginLeft: 50 }} />
                     </div>
                 </BlockUI>
@@ -599,8 +631,8 @@ export default function App() {
                         marginBottom: 100
                     }}>
                         <h3 style={{ width: '30%', textAlign: 'left' }}>Nhập ngưỡng quyết định phân bổ</h3>
-                        <InputNumberAddSub ref={phanBoSo} style={{ marginLeft: 30, width: 200 }} />
-                        <Button onClick={_funcLamMoiNguongPhanBo} label="Làm mới" style={{ width: 180, marginLeft: 50 }} />
+                        <InputNumberAddSub ref={numberPhanBoPage3} style={{ marginLeft: 30, width: 200 }} />
+                        <Button onClick={_funcChiaPhanBoPage2} label="Làm mới" style={{ width: 180, marginLeft: 50 }} />
                     </div>
                     <div style={{
                         display: 'flex',
@@ -609,7 +641,7 @@ export default function App() {
                         margin: 10,
                         borderTop: '1px solid #000'
                     }}>
-                        <h3>Kết quả:<span style={{ color: 'green', marginLeft: 10, marginRight: 10 }}>{'2 tinhfr'}</span>{`Có thể cung cấp nguồn lực bác sĩ`}</h3>
+                        <h3>Kết quả:<span style={{ color: 'green', marginLeft: 10, marginRight: 10 }}>{`${dataAdd.length} tỉnh `}</span>{`có thể cung cấp nguồn lực bác sĩ:`}</h3>
                     </div>
                     <TableValidateAdd data={dataAdd} />
                     <div style={{ height: 150 }} />
@@ -621,7 +653,7 @@ export default function App() {
                         paddingTop: 30,
                         borderTop: '1px solid #000'
                     }}>
-                        <h3>Kết quả:<span style={{ color: 'green', marginLeft: 10, marginRight: 10 }}>{'2 tinhfr'}</span>{`cần nguồn lực bác sĩ`}</h3>
+                        <h3>Kết quả:<span style={{ color: 'red', marginLeft: 10, marginRight: 10 }}>{`${dataSub.length} tỉnh `}</span>{` tỉnh cần nguồn lực bác sĩ:`}</h3>
                     </div>
                     <TableValidateSub data={dataSub} />
                 </BlockUI>

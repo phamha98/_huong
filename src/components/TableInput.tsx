@@ -16,7 +16,26 @@ const TableInput = React.forwardRef(({ }: any, ref) => {
                 tong_nguon_luc,
                 ti_le_tinh,
             }
-        }, clear: () => {
+        },
+        setValue: (e: any) => {
+            const {
+                so_ca_nhiem,
+                tong_so_ca,
+                ti_le_ca_nhiem,
+                ti_le_ca_nang,
+                ti_le_tu_vong,
+                tong_nguon_luc,
+                ti_le_tinh,
+            } = e
+            set_so_ca_nhiem(so_ca_nhiem)
+            set_tong_so_ca(tong_so_ca)
+            set_ti_le_ca_nhiem(ti_le_ca_nhiem)
+            set_ti_le_ca_nang(ti_le_ca_nang)
+            set_ti_le_tu_vong(ti_le_tu_vong)
+            set_tong_nguon_luc(tong_nguon_luc)
+            set_ti_le_tinh(ti_le_tinh)
+        },
+        clear: () => {
             set_so_ca_nhiem(0)
             set_tong_so_ca(0)
             set_ti_le_ca_nhiem(0)
