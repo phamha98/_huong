@@ -12,6 +12,7 @@ import TableValidate5 from './components/TableValidate5'
 import { theCity } from './theCity'
 import { isArray } from 'underscore'
 import { TableValidate6, TableTrongSo, TableValidate6MinMax, TableValidate7, TableValidateAdd, TableValidateSub, InputNumberAddSub } from './components'
+import moment from 'moment'
 function getRI(n: number) {
     if (n < 1 || n > 15) return
     const Table = [0.00, 0.00, 0.58, 0.90, 1.12, 1.24, 1.32, 1.41, 1.45, 1.49, 1.51, 1.48, 1.56, 1.57, 1.58]
@@ -97,14 +98,46 @@ const LamTron = (value: number) => {
     return n
 }
 const numberRound = (v: number) => parseFloat(v.toFixed(6))
-function App() {
+
+export default function App() {
     const _arr1 = useRef<any>([])
+    const phanBoSo = useRef<any>(null)
     const inputRef = useRef<any>()
     const [data1, setData1] = useState<any>([])
     const [data2, setData2] = useState<any>([])
     const [data3, setData3] = useState<any>([])
-    // console.log('=>>>>>.', (0.15 / 0.2).toFixed(2))
-    const Run = () => {
+    const [alertRI, setAlertRI] = useState('')
+    const [result, setResult] = useState<any>(null)
+    const [data4, setData4] = useState(theCity.map(i => ({ ...i, x1: 0, x2: 0, x3: 0, x4: 0, x5: 0, })))
+    const [data5, setData5] = useState<any[]>([])
+    const [data6, setData6] = useState<any[]>([])
+    const [data7, setData7] = useState<any[]>([])
+    const [dataAdd, setDataAdd] = useState<any[]>([])
+    const [dataSub, setDataSub] = useState<any[]>([])
+    const [SI, setSI] = useState<any>(0)
+
+    const [data6_minMax, setData6_minMax] = useState<any[]>([])
+    const [dataTrongSo, setDataTrongSo] = useState<any[]>([0.2, 0.05, 0.15, 0.15, 0.05, 0.25, 0.15])
+
+    const _funcClear = () => {
+        setData1([])
+        setData2([])
+        setData3([])
+        setAlertRI('')
+        setResult([])
+        setData5([])
+        setData6([])
+        setData7([])
+        setDataAdd([])
+        setDataSub([])
+        setData6_minMax([])
+        setDataTrongSo([])
+        // setData4(theCity.map(i => ({ ...i, x1: 0, x2: 0, x3: 0, x4: 0, x5: 0, })))
+    }
+    const [dev, setDev] = useState(false)
+    const [navigation, setNavigation] = useState(0)
+    const _funcKiemTraTrongSo = () => {
+
         let data = inputRef.current?.getValue()
         console.log('data', data)
         const {
@@ -229,20 +262,17 @@ function App() {
         let lmax = sum_lmax / n
         let CI = (lmax - n) / (n - 1)
         let RI = getRI(n)
-        let CR = CI / RI
+        let CR = numberRound(CI / RI)
         if (CR < 0.1) {
-            setAlertRI('Hợp lệ')
+            setAlertRI(`Độ tin cậy các trọng số =${CR} (Hợp lệ)`)
             setResult({
                 CR, lmax, CI, RI,
             })
+            _funcXepHangTP()
         }
-        else setAlertRI('Không hợp lệ,vui lòng nhập lại')
+        else setAlertRI(`Độ tin cậy các trọng số =${CR} (Không hợp lệ)`)
+        setNavigation(1)
     }
-    const [alertRI, setAlertRI] = useState('Thông báo')
-    const [result, setResult] = useState<any>(null)
-
-
-
 
     let _data4 = [
         { x0: 'Hà Nội', x1: 420, x2: 1605587, x3: 0.000050, x4: 0.3114, x5: 0.0008, x6: 17858, x7: 3 },
@@ -251,13 +281,17 @@ function App() {
         { x0: 'Nghệ An', x1: 50, x2: 485595, x3: 0.000015, x4: 0.2471, x5: 0.0003, x6: 6552, x7: 1 },
         { x0: 'Sơn La', x1: 10, x2: 150838, x3: 0.000008, x4: 0.1989, x5: 0.0000, x6: 2129, x7: 1 },
     ]
-    const Run2 = () => {
+    const _funcXepHangTP = async () => {
         let result: any = { x0: "Tổng", x1: 0, x2: 0, x3: 0, x4: 0, x5: 0, x6: 0, x7: 0, }
         data4.forEach(item => {
             result.x1 = result.x1 + Math.pow(item.x1, 2)
             result.x2 = result.x2 + Math.pow(item.x2, 2)
             result.x3 = result.x3 + Math.pow(item.x3, 2)
-            result.x4 = result.x4 + Math.pow(item.x4, 2)
+            if (item.x4 != 0) {
+                // console.log('x4444444', item.x4)
+                result.x4 = result.x4 + Math.pow(item.x4, 2)
+
+            }
             result.x5 = result.x5 + Math.pow(item.x5, 2)
             result.x6 = result.x6 + Math.pow(item.x6, 2)
             result.x7 = result.x7 + Math.pow(item.x7, 2)
@@ -272,7 +306,7 @@ function App() {
             x6: numberRound(Math.sqrt(result.x6)),
             x7: numberRound(Math.sqrt(result.x7)),
         }
-
+        // console.log('resultSqrt', resultSqrt)
 
         setData4([...data4, resultSqrt])
         let _data5: any[] = []
@@ -281,11 +315,12 @@ function App() {
             x1: numberRound(item.x1 / resultSqrt.x1),
             x2: numberRound(item.x2 / resultSqrt.x2),
             x3: numberRound(item.x3 / resultSqrt.x3),
-            x4: numberRound(item.x4 / resultSqrt.x4),
+            x4: resultSqrt.x4 == 0 ? 0 : numberRound(item.x4 / resultSqrt.x4),
             x5: numberRound(item.x5 / resultSqrt.x5),
             x6: numberRound(item.x6 / resultSqrt.x6),
             x7: numberRound(item.x7 / resultSqrt.x7),
         }))
+        console.log('_data5_data5', _data5)
         setData5(_data5)
         let _data6: any[] = []
         _data5.forEach(item => _data6.push({
@@ -330,6 +365,7 @@ function App() {
         })
         setData6_minMax([min, max])
         let _data7: any[] = []
+        console.log('_data6', _data6)
         _data6.forEach(item => {
             let ob: any = { ...item, x8: 0, x9: 0, x10: 0 }
             for (var i = 1; i <= 7; i++) {
@@ -342,8 +378,11 @@ function App() {
             ob.x10 = numberRound(ob.x8 / (ob.x8 + ob.x9))
             _data7.push(ob)
         })
+        //console.log('na2==>>data7', _data7)
         _data7.sort((a, b) => b.x10 - a.x10)
-        setData7(_data7.map((i, j) => ({ ...i, x11: _data7.length - j })))
+        //console.log('na2==>>data7', _data7)
+        await setData7(_data7.map((i, j) => ({ ...i, x11: _data7.length - j })))
+        //console.log('na2==>>data7=====', data7)
         let si = 0
         _data7.forEach(i => {
             si = si + i.x10
@@ -353,40 +392,15 @@ function App() {
 
         ////
     }
-    const [data4, setData4] = useState(theCity.map(i => ({
-        ...i,
-        x1: 0,
-        x2: 0,
-        x3: 0,
-        x4: 0,
-        x5: 0,
-    })))
-    const [data5, setData5] = useState<any[]>([])
-    const [data6, setData6] = useState<any[]>([])
-    const [data7, setData7] = useState<any[]>([])
-    const [dataAdd, setDataAdd] = useState<any[]>([])
-    const [dataSub, setDataSub] = useState<any[]>([])
-    const [SI, setSI] = useState<any>(0)
-
-    const [data6_minMax, setData6_minMax] = useState<any[]>([])
-    const [dataTrongSo, setDataTrongSo] = useState<any[]>([0.2, 0.05, 0.15, 0.15, 0.05, 0.25, 0.15])
-    const chiaPhanBo = () => {
+    //console.log('||||||data7', data7)
+    const _funcChiaPhanBo = () => {
+        setNavigation(2)
         let nguong = phanBoSo.current?.getValue()
         console.log('nguong', nguong)
         console.log('data7', data7)
         setDataAdd(data7.filter(({ x10 }) => nguong > x10).map(i => ({ ...i, x12: numberRound(i.x10 / SI) })))
         setDataSub(data7.filter(({ x10 }) => nguong < x10).map(i => ({ ...i, x12: numberRound(i.x10 / SI) })))
     }
-    const phanBoSo = useRef<any>(null)
-    /**
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     */
     useEffect(() => {
         const getData = async () => {
 
@@ -449,50 +463,171 @@ function App() {
         }
         getData()
     }, [])
+    const _funcGoBack = () => {
+        switch (navigation) {
+            case 0:
+
+                break;
+            case 1:
+                _funcClear()
+                setNavigation(0)
+                break;
+            case 2:
+                setNavigation(1)
+                break;
+
+            default:
+                break;
+        }
+    }
+    const _funcLamMoiTrongSo = () => { }
+    const _funcLamMoiNguongPhanBo = () => { }
     return (
         <div
             className='App'
             style={{
                 padding: 10,
-                borderWidth: 20,
+                // borderWidth: 20,
                 borderStyle: 'solid',
                 borderRadius: 10
             }}
         >
-            <BlockUI style={{ borderColor: 'red' }}>
-                <TableInput ref={inputRef} />
-                <Button onClick={Run} label='Run' />
-                <Title title="B1" />
-                <TableValidate1 data={data1} />
-                <TableValidate2 data={data2} />
-                <TableValidate3 data={data3} />
-                <Title title={alertRI} />
-                {result &&
-                    <>
-                        <Title title={`CR=${result?.CR} `} />
-                        <Title title={` CI=${result?.CI}  `} />
-                        <Title title={`  RI=${result?.RI}  `} />
-                        <Title title={`  lmax=${result?.lmax}; `} />
-                    </>
-                }
-                <Button onClick={Run2} label='Run2' />
-                <TableValidate4 data={data4.map(i => ({ ...i, x7: i?.x7 == 4 ? "Trung ương" : "Tỉnh" }))} />
-                <Title title={`TableValidate5`} />
-                <TableValidate5 data={data5} />
-                <TableTrongSo data={dataTrongSo} />
-                <TableValidate6 data={data6} />
-                <TableValidate6MinMax data={data6_minMax} />
-                <TableValidate7 data={data7} />
-                <Title title={`Tổng  Si =${numberRound(SI)}`} />
-                <InputNumberAddSub ref={phanBoSo} />
-                <Button onClick={chiaPhanBo} label='chiaPhanBo' />
-                <TableValidateAdd data={dataAdd} />
-                <TableValidateSub data={dataSub} />
+            <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                zIndex: 1100,
+                width: `100%`,
+                display: 'flex',
+                height: 50,
+            }}>
+                {navigation != 0 && <Button onClick={_funcGoBack} label='Quay lại' style={{ width: 150, borderRadius: 0, }} />}
+                <Button disabled label="PHÂN BỔ NGUỒN LỰC Y TẾ" style={{ width: '100%', borderRadius: 0, backgroundColor: 'blue' }} />
+            </div>
+            <div style={{ height: 50, backgroundColor: '#fff' }} />
+            {/* **************************************************************************************************************** */}
+            {
+                navigation == 0 &&
+                <BlockUI style={{ borderColor: 'red' }}>
+                    <Title title={`Thống kê tình hình dịch bệnh của 63 tình thành trên cả nước hôm nay ${moment().format('DD/MM/YYYY')}`} />
+                    <TableValidate4 data={data4.map((i, index) => ({ ...i, x7: i?.x7 == 4 ? "Trung ương" : "Tỉnh", index: index + 1 }))} />
 
-            </BlockUI>
-        </div>
+                    <div style={{ height: 50 }} />
+                    <TableInput ref={inputRef} />
+                    <Button onClick={_funcKiemTraTrongSo} label='Kiểm tra trọng số' style={{ marginTop: 50, marginBottom: 300 }} />
+                </BlockUI>
+            }
+            {/* **************************************************************************************************************** */}
+            {/* **************************************************************************************************************** */}
+
+            {
+                navigation == 1 &&
+                <BlockUI style={{ borderColor: 'red' }}>
+                    <Title title={`Thống kê tình hình dịch bệnh của 63 tình thành trên cả nước hôm nay ${moment().format('DD/MM/YYYY')}`} />
+                    <TableValidate4 data={data4.map((i, index) => ({ ...i, x7: i?.x7 == 4 ? "Trung ương" : "Tỉnh", index: index + 1 }))} />
+                    <TableInput ref={inputRef} />
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: -50, marginBottom: 50, marginRight: 40 }}>
+                        <Button onClick={_funcLamMoiTrongSo} label="Làm mới" style={{ width: 150 }} />
+                    </div>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        margin: 10,
+                        marginBottom: 20,
+                        borderTop: '1px solid #000'
+                    }}>
+                        <h3>Kết quả:<span style={{ color: 'green', marginLeft: 20 }}>{alertRI}{'Độ tin cậy các trọng số =0 (Hợp lệ)'}</span></h3>
+                        <Title style={{ marginTop: 0 }} title={`Bảng xếp hạng các thành phố có nguy cơ dịch bệnh`} />
+                    </div>
+                    {/* <Button onClick={_funcKiemTraTrongSo} label='_funcKiemTraTrongSo' />
+                    <Button onClick={() => setDev(prev => !prev)} label={!dev ? "Pro" : 'Dev'} /> */}
+                    {dev && <>
+                        <Title title="B1" />
+                        <TableValidate1 data={data1} />
+                        <TableValidate2 data={data2} />
+                        <TableValidate3 data={data3} />
+                        {/* <Title title={alertRI} /> */}
+                        {result &&
+                            <>
+                                <Title title={`CR=${result?.CR} `} />
+                                <Title title={` CI=${result?.CI}  `} />
+                                <Title title={`  RI=${result?.RI}  `} />
+                                <Title title={`  lmax=${result?.lmax}; `} />
+                            </>
+                        }
+                        <Title title={`Tổng  Si =${numberRound(SI)}`} />
+                    </>
+                    }
+                    {/* <Button onClick={_funcXepHangTP} label='_funcXepHangTP' /> */}
+                    {dev && <TableTrongSo data={dataTrongSo} />}
+
+
+                    <TableValidate5 data={data5} />
+                    {dev && <>
+                        <TableValidate6 data={data6} />
+                        <TableValidate6MinMax data={data6_minMax} />
+                        <TableValidate7 data={data7} />
+                    </>
+                    }
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        margin: 10,
+                        marginTop: 50,
+                        marginBottom: 250
+                    }}>
+                        <h3 style={{ width: '30%', textAlign: 'left' }}>Nhập ngưỡng quyết định phân bổ</h3>
+                        <InputNumberAddSub ref={phanBoSo} style={{ marginLeft: 30, width: 200 }} />
+                        <Button onClick={_funcChiaPhanBo} label="Kết quả" style={{ width: 180, marginLeft: 50 }} />
+                    </div>
+                </BlockUI>
+            }
+            {/* **************************************************************************************************************** */}
+            {/* **************************************************************************************************************** */}
+            {/* **************************************************************************************************************** */}
+            {
+                navigation == 2 &&
+                <BlockUI style={{ borderColor: 'red' }}>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        margin: 10,
+                        marginTop: 10,
+                        marginBottom: 100
+                    }}>
+                        <h3 style={{ width: '30%', textAlign: 'left' }}>Nhập ngưỡng quyết định phân bổ</h3>
+                        <InputNumberAddSub ref={phanBoSo} style={{ marginLeft: 30, width: 200 }} />
+                        <Button onClick={_funcLamMoiNguongPhanBo} label="Làm mới" style={{ width: 180, marginLeft: 50 }} />
+                    </div>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        margin: 10,
+                        borderTop: '1px solid #000'
+                    }}>
+                        <h3>Kết quả:<span style={{ color: 'green', marginLeft: 10, marginRight: 10 }}>{'2 tinhfr'}</span>{`Có thể cung cấp nguồn lực bác sĩ`}</h3>
+                    </div>
+                    <TableValidateAdd data={dataAdd} />
+                    <div style={{ height: 150 }} />
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        margin: 10,
+                        paddingTop: 30,
+                        borderTop: '1px solid #000'
+                    }}>
+                        <h3>Kết quả:<span style={{ color: 'green', marginLeft: 10, marginRight: 10 }}>{'2 tinhfr'}</span>{`cần nguồn lực bác sĩ`}</h3>
+                    </div>
+                    <TableValidateSub data={dataSub} />
+                </BlockUI>
+            }
+        </div >
     )
 }
 
-export default App
 

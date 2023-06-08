@@ -16,6 +16,14 @@ const TableInput = React.forwardRef(({ }: any, ref) => {
                 tong_nguon_luc,
                 ti_le_tinh,
             }
+        }, clear: () => {
+            set_so_ca_nhiem(0)
+            set_tong_so_ca(0)
+            set_ti_le_ca_nhiem(0)
+            set_ti_le_ca_nang(0)
+            set_ti_le_tu_vong(0)
+            set_tong_nguon_luc(0)
+            set_ti_le_tinh(0)
         }
     }))
     const [so_ca_nhiem, set_so_ca_nhiem] = useState<any>(0.2)

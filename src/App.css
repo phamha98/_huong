@@ -1,10 +1,11 @@
 .App {
   text-align: center;
   border:1px solid #eee;
- 
-
 }
-
+.Border{
+  text-align: center;
+  border:1px solid red;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
