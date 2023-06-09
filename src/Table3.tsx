@@ -15,6 +15,7 @@ import { TableValidate6, TableTrongSo, TableValidate6MinMax, TableValidate7, Tab
 import moment from 'moment'
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
+// import XLSX_Style from 'xlsx-style';
 
 function getRI(n: number) {
     if (n < 1 || n > 15) return
@@ -398,12 +399,12 @@ export default function App() {
         //console.log('na2==>>data7', _data7)
         _data7.sort((a, b) => b.x10 - a.x10)
         //console.log('na2==>>data7', _data7)
-        await setData7(_data7.map((i, j) => ({ ...i, x11: _data7.length - j })))
         //console.log('na2==>>data7=====', data7)
         let si = 0
         _data7.forEach(i => {
             si = si + i.x10
         })
+        await setData7(_data7.map((i, j) => ({ ...i, x11: _data7.length - j, x12: numberRound(i.x10 / si) })))
 
         setSI(si)
 
@@ -541,6 +542,48 @@ export default function App() {
         const data = new Blob([excelBuffer], { type: fileType });
         FileSaver.saveAs(data, fileName + fileExtension);
     }
+
+    /***** */
+    // const handleExport = () => {
+    //     // Create a new workbook
+    //     const workbook = XLSX_Style.utils.book_new();
+
+    //     // Create a new worksheet
+    //     const worksheet = XLSX_Style.utils.aoa_to_sheet([
+    //         ['Name', 'Age', 'Country'],
+    //         ['John Doe', 25, 'USA'],
+    //         ['Jane Smith', 30, 'Canada'],
+    //         ['Bob Johnson', 35, 'Australia']
+    //     ]);
+
+    //     // Apply custom styles to the cells
+    //     const styles = {
+    //         header: {
+    //             font: { bold: true },
+    //             fill: { fgColor: { rgb: 'FFFF0000' } } // Red background color
+    //         },
+    //         cell: {
+    //             fill: { fgColor: { rgb: 'FF00FF00' } } // Green background color
+    //         }
+    //     };
+
+    //     // Apply styles to specific cells
+    //     XLSX_Style.utils.sheet_add_aoa(worksheet, [
+    //         ['Name', 'Age', 'Country'],
+    //         ['John Doe', { t: 'n', v: 25, s: styles.cell }, 'USA'],
+    //         ['Jane Smith', { t: 'n', v: 30, s: styles.cell }, 'Canada'],
+    //         ['Bob Johnson', { t: 'n', v: 35, s: styles.cell }, 'Australia']
+    //     ]);
+
+    //     // Apply styles to header row
+    //     XLSX_Style.utils.sheet_set_range_style(worksheet, 'A1:C1', styles.header);
+
+    //     // Add the worksheet to the workbook
+    //     XLSX_Style.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+    //     // Save the workbook to a file
+    //     XLSX_Style.writeFile(workbook, 'output.xlsx');
+    // };
     return (
         <div
             className='App'
@@ -622,7 +665,8 @@ export default function App() {
                     {dev && <TableTrongSo data={dataTrongSo} />}
 
 
-                    <TableValidate5 data={data5} />
+                    {/* <TableValidate5 data={data5} /> */}
+                    <TableValidate7 data={data7} />
                     {dev && <>
                         <TableValidate6 data={data6} />
                         <TableValidate6MinMax data={data6_minMax} />
