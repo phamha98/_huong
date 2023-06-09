@@ -45,13 +45,13 @@ const TableInput = React.forwardRef(({ }: any, ref) => {
             set_ti_le_tinh(0)
         }
     }))
-    const [so_ca_nhiem, set_so_ca_nhiem] = useState<any>(0.2)
-    const [tong_so_ca, set_tong_so_ca] = useState<any>(0.05)
-    const [ti_le_ca_nhiem, set_ti_le_ca_nhiem] = useState<any>(0.15)
-    const [ti_le_ca_nang, set_ti_le_ca_nang] = useState<any>(0.15)
-    const [ti_le_tu_vong, set_ti_le_tu_vong] = useState<any>(0.05)
-    const [tong_nguon_luc, set_tong_nguon_luc] = useState<any>(0.25)
-    const [ti_le_tinh, set_ti_le_tinh] = useState<any>(0.15)
+    const [so_ca_nhiem, set_so_ca_nhiem] = useState<any>()//(0.2)
+    const [tong_so_ca, set_tong_so_ca] = useState<any>()//(0.05)
+    const [ti_le_ca_nhiem, set_ti_le_ca_nhiem] = useState<any>()//(0.15)
+    const [ti_le_ca_nang, set_ti_le_ca_nang] = useState<any>()//(0.15)
+    const [ti_le_tu_vong, set_ti_le_tu_vong] = useState<any>()//(0.05)
+    const [tong_nguon_luc, set_tong_nguon_luc] = useState<any>()//(0.25)
+    const [ti_le_tinh, set_ti_le_tinh] = useState<any>()//(0.15)
     return (
         <table style={{ width: '100%', padding: 10 }}>
             <tr style={{ textAlign: 'left' }}>

@@ -57,23 +57,29 @@ export function TableValidate6MinMax({ data = [] }: any) {
 }
 export function TableValidate7({ data = [] }: any) {
     const [more, setMore] = useState(false)
-
+const i:any={align:'center'}
     return (
         <>
             <DataTable value={data.slice(0, !more ? 5 : undefined)} tableStyle={{ minWidth: '50rem' }}>
-                <Column field="x0" header="Tỉnh" />
-                <Column field="x1" header="Số ca nhiễm mới" />
-                <Column field="x2" header="Tổng số ca" />
-                <Column field="x3" header="Tỷ lệ ca nhiem" />
-                <Column field="x4" header="Tỷ lệ ca mắc" />
-                <Column field="x5" header="Tỷ lệ tử vong" />
-                <Column field="x6" header="Tổng nhân lực y tế" />
-                <Column field="x7" header="TP trung ương/tỉnh" />
-                {/* <Column field="x8" header="Di+" />
-            <Column field="x9" header="Di-" />
-            <Column field="x10" header="Si/Di" />
-        <Column field="x11" header="RANK" /> */}
-                <Column field="x12" header="Chẩn hoá SI" />
+
+                <Column field="x0" {...i}header="Tỉnh"  {...i} />
+                <Column field="x1" {...i}header="Số ca nhiễm mới" />
+                <Column field="x2" {...i}header="Tổng số ca" />
+                <Column field="x3" {...i}header="Tỷ lệ ca nhiễm" />
+                <Column field="x4" {...i}header="Tỷ lệ ca mắc" />
+                <Column field="x5" {...i}header="Tỷ lệ tử vong" />
+                <Column field="x6" {...i}header="Tổng nhân lực y tế" />
+                <Column field="x7" {...i}header="TP trung ương/tỉnh" />
+                {/* <Column field="x8" {...i}header="Di+" />
+                <Column field="x9" {...i}header="Di-" />
+                <Column field="x10" {...i}header="Si/Di" />
+                <Column field="x11" {...i}header="RANK" />
+                <Column field="x12" {...i}header="Chuẩn hoá SI" /> */}
+                {/* <Column field="x8" {...i}header="Di+" />
+                <Column field="x9" {...i}header="Di-" /> */}
+                <Column field="x10" {...i}header="Tính tương đồng" />
+                {/* <Column field="x11" {...i}header="RANK" />
+                <Column field="x12" {...i}header="Chuẩn hoá SI" /> */}
             </DataTable>
             <h5 style={{ color: 'blue' }} onClick={() => setMore(i => !i)}>
                 {more ? 'Thu gọn' : 'Xem thêm'}
@@ -124,7 +130,7 @@ export const InputNumberAddSub = React.forwardRef(({ style, ...rest }: any, ref)
         getValue: () => value,
         setValue
     }))
-    const [value, setValue] = useState<any>(0.5)
+    const [value, setValue] = useState<any>()//(0.5)
     return (
 
         <InputNumber
